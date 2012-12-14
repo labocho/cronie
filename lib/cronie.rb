@@ -11,8 +11,18 @@ module Cronie
       tasks.each{|t| t.do(time)}
     end
 
+    def add_task(*args, &block)
+      tasks << Task.new(*args, &block)
+    end
+
     def tasks
       @tasks ||= []
+    end
+
+    def load(path)
+      sandbox = Object.new
+      sandbox.send :extend, Cronie::DSL
+      sandbox.instance_eval File.read(path)
     end
 
     # ===== Resque 対応ここから =====
