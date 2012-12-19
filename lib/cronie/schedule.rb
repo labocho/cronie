@@ -37,6 +37,13 @@ module Cronie
         element
       end
 
+      def self.parse_special_element(str)
+        str = str.downcase[0..2]
+        months = [nil] + %w(jan feb mar apr may jun jul aug sep oct nov dec) # index と月の数を合わせるため、最初に nil をいれておく
+        weekdays = %w(sun mon tue wed thu fri sat)
+        months.index(str) || weekdays.index(str)
+      end
+
       def initialize(attributes = {})
         attributes.each do |k, v|
           send("#{k}=", v)
@@ -99,18 +106,13 @@ module Cronie
     private :elements, :elements=
 
     # crontab 形式のスケジュール指定文字列から新しいインスタンスをつくる
-    # 内部形式は list と step の 2 要素配列の、5 要素配列
-    # 0 1,2-3,4 */10 * * なら
-    # [ [[0], nil],
-    #   [[1,2..3,4], nil],
-    #   [[:*], 10],
-    #   [[:*], nil],
-    #   [[:*], nil]
-    # ] になる
+    # 内部形式は Element の 5 要素配列
     # パースに失敗すると ParseError を投げる
     def self.parse!(str)
       return parse_special(str) if str =~ /\A@.+\z/
-      raise ParseError, "Unexpected schedule string #{str.inspect}" unless str =~ /\A.+ .+ .+ .+ .+\z/
+      unless str =~ %r(\A\s*\S+\s+\S+\s+\S+\s+\S+\s+\S+\s*\z)
+        raise ParseError, "Unexpected schedule string #{str.inspect}"
+      end
 
       elements = str.split(" ").zip(Element::TYPES).map do |text, type|
         Element.parse(text, type)
@@ -143,12 +145,12 @@ module Cronie
     end
 
     def inspect
-      "#<Cron::Schedule: #{to_s}>"
+      "#<Cronie::Schedule: #{to_s}>"
     end
 
     # 基底クラスに Schedule を持ち、to_s が同じなら true
     def ==(other)
-      other.is_a?(Cron::Schedule) && to_s == other.to_s
+      other.is_a?(Cronie::Schedule) && to_s == other.to_s
     end
 
     private
@@ -169,13 +171,6 @@ module Cronie
       else
         raise ParseError, "Unexpected schedule string: #{str}"
       end
-    end
-
-    def self.parse_special_element(str)
-      str = str.downcase[0..2]
-      months = [nil] + %w(jan feb mar apr may jun jul aug sep oct nov dec) # index と月の数を合わせるため、最初に nil をいれておく
-      weekdays = %w(sun mon tue wed thu fri sat)
-      months.index(str) || weekdays.index(str)
     end
   end
 end

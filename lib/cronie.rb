@@ -30,7 +30,7 @@ module Cronie
     @queue = :cronie
 
     def run_async(time)
-      Resque.enqueue(Cron, time)
+      Resque.enqueue(Cronie, time)
     end
     # ===== Resque 対応ここまで =====
   end
