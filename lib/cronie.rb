@@ -5,9 +5,11 @@ module Cronie
   autoload :DSL, "cronie/dsl"
   autoload :Schedule, "cronie/schedule"
   autoload :Task, "cronie/task"
+  @queue = :cronie
 
   class << self
     def run(time)
+      time = time.is_a?(String) ? Time.parse(time) : time
       tasks.each{|t| t.do(time)}
     end
 
@@ -25,13 +27,10 @@ module Cronie
       sandbox.instance_eval File.read(path)
     end
 
-    # ===== Resque 対応ここから =====
+    # for Resque
     alias_method :perform, :run
-    @queue = :cronie
-
     def run_async(time)
       Resque.enqueue(Cronie, time)
     end
-    # ===== Resque 対応ここまで =====
   end
 end
