@@ -20,6 +20,21 @@ Or install it yourself as:
 
 TODO: Write usage instructions here
 
+## Work with Resque
+
+Register job via Ruby.
+
+    Cronie.run_async(Time.now)
+
+Register job via redis-cli.
+
+    $ redis-cli sadd resque:queues cronie
+    $ redis-cli rpush resque:queue:cronie '{"class":"Cronie","args":'`date +%s`'}'
+
+Run worker that process `cronie` queue.
+
+    $ rake resque:work QUEUE=cronie
+
 ## Contributing
 
 1. Fork it
