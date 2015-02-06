@@ -6,6 +6,7 @@ describe Cronie::DSL do
     result = {}
     @result = result
     extend Cronie::DSL
+    set_utc_offset "+09:00"
     task "Named task", "0 */2 * * *" do |time|
       result[:time] = time
     end
@@ -26,5 +27,9 @@ describe Cronie::DSL do
     @result[:time].should be_nil
     Cronie.run(Time.new(2011, 11, 11, 2, 0, 0))
     @result[:time].should == Time.new(2011, 11, 11, 2, 0, 0)
+  end
+
+  it "sets Cronie.utc_offset" do
+    Cronie.utc_offset.should == "+09:00"
   end
 end

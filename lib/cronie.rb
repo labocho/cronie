@@ -9,6 +9,7 @@ module Cronie
   @queue = :cronie
 
   class << self
+    attr_accessor :utc_offset
     # `time` should be either Time, String or Integer.
     # String will be passed by Time.parse.
     # Integer will be passed by Time.at
@@ -39,11 +40,11 @@ module Cronie
 
     private
     def encode_time(time)
-      decode_time(time).utc.iso8601
+      decode_time(time).iso8601
     end
 
     def decode_time(time)
-      case time
+      t = case time
       when String
         Time.parse(time)
       when Integer
@@ -51,6 +52,7 @@ module Cronie
       else
         time
       end
+      utc_offset ? t.getlocal(utc_offset) : t
     end
   end
 end
