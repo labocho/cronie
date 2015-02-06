@@ -1,37 +1,58 @@
 # Cronie
 
-TODO: Write a gem description
-
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'cronie'
+    gem 'cronie', git: 'https://github.com/labocho/cronie.git'
 
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install cronie
-
 ## Usage
 
-TODO: Write usage instructions here
+Create `Croniefile`.
+
+    # Optional time zone setting
+    set_utc_offset "+09:00"
+
+    # Define task
+    task "Daily task at 00:30", "0 30 * * *" do
+      do_monthly_task
+    end
+
+    # Omit title
+    task "0 * * * *" do
+      do_hourly_task
+    end
+
+    # Omit schedule (run every minute)
+    task do
+      do_hourly_task
+    end
+
+In your application.
+
+   require "cronie"
+   Cronie.load("./Croniefile")
+   Cronie.run(Time.now)
 
 ## Work with Resque
 
-Register job via Ruby.
+Register task via Ruby.
 
+    require "cronie"
+    require "resque"
+    Cronie.load("./Croniefile")
     Cronie.run_async(Time.now)
 
-Register job via redis-cli.
+Or, via redis-cli.
 
     $ redis-cli sadd resque:queues cronie
     $ redis-cli rpush resque:queue:cronie '{"class":"Cronie","args":'`date +%s`'}'
 
-Run worker that process `cronie` queue.
+Run worker that processes `cronie` queue.
 
     $ rake resque:work QUEUE=cronie
 
