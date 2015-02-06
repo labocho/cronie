@@ -1,9 +1,8 @@
 module Cronie
-  # task "Check email", "0 */2 * * *" do
-  #   # some process...
-  # end
   module DSL
-    # 定期実行するタスクを定義する
+    # task "Check email", "0 */2 * * *" do
+    #   # some process...
+    # end
     def task(*args, &block)
       Cronie.add_task(*args, &block)
     end

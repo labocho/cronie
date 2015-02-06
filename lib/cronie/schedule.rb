@@ -1,10 +1,11 @@
 module Cronie
   class Schedule
     class ParseError < Cronie::Error; end
-    # type は TYPES のいずれか
-    # numbers は Fixnum, Range, :* の配列
+
     class Element
       TYPES = [:minute, :hour, :day_of_month, :month, :day_of_week]
+      # type is in TYPES
+      # numbers is Array of Fixnum, Range, or :*
       attr_accessor :type, :numbers, :step
 
       def self.parse(text, type)
@@ -39,7 +40,8 @@ module Cronie
 
       def self.parse_special_element(str)
         str = str.downcase[0..2]
-        months = [nil] + %w(jan feb mar apr may jun jul aug sep oct nov dec) # index と月の数を合わせるため、最初に nil をいれておく
+        # prepend nil to make index of "jan" to 1 (instead of 0)
+        months = [nil] + %w(jan feb mar apr may jun jul aug sep oct nov dec)
         weekdays = %w(sun mon tue wed thu fri sat)
         months.index(str) || weekdays.index(str)
       end
@@ -102,12 +104,12 @@ module Cronie
       end
     end
 
+    # elements is array of 5 Element
     attr_accessor :elements
     private :elements, :elements=
 
-    # crontab 形式のスケジュール指定文字列から新しいインスタンスをつくる
-    # 内部形式は Element の 5 要素配列
-    # パースに失敗すると ParseError を投げる
+    # Create instance from crontab format schedule string.
+    # Raises `ParseError` if argument cannot be parsed.
     def self.parse!(str)
       return parse_special(str) if str =~ /\A@.+\z/
       unless str =~ %r(\A\s*\S+\s+\S+\s+\S+\s+\S+\s+\S+\s*\z)
@@ -123,14 +125,14 @@ module Cronie
       schedule
     end
 
-    # パースに失敗したとき例外を起こさず、 nil を返す
+    # Create instance from crontab format schedule string.
+    # Returns `nil` if argument cannot be parsed.
     def self.parse(*args)
       parse! *args
     rescue ParseError
     end
 
-    # マッチしたら true
-    # マッチしなければ false を返す
+    # Returns whether schedule matches Time
     def =~(t)
       numbers = [t.min, t.hour, t.day, t.month, t.wday]
       elements.zip(numbers).all?{|element, number|
@@ -138,7 +140,8 @@ module Cronie
       }
     end
 
-    # 内部形式を crontab 形式で返す (文字形式 (@weekly や sun など) で指定されたものは数値形式に展開されている)
+    # Returns as crontab format
+    # If not a number (@weekly, sun, ...) passed, it shows as number
     def to_s
       return super unless elements
       elements.map(&:to_s).join(" ")
@@ -148,7 +151,6 @@ module Cronie
       "#<Cronie::Schedule: #{to_s}>"
     end
 
-    # 基底クラスに Schedule を持ち、to_s が同じなら true
     def ==(other)
       other.is_a?(Cronie::Schedule) && to_s == other.to_s
     end

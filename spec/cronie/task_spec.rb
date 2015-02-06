@@ -4,7 +4,7 @@ require 'spec_helper'
 module Cronie
   describe Task do
     describe "#do" do
-      it "@proc.call が呼ばれる" do
+      it "calls @proc.call" do
         t = Time.now
         called = false
 
@@ -15,7 +15,7 @@ module Cronie
         task.do(t)
         called.should be_true
       end
-      it "shedule が一致しないときは呼ばれない" do
+      it "do not call if shedule does not match" do
         t = Time.new(2011, 11, 7, 0, 0, 0)
         called = false
 

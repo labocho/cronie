@@ -16,13 +16,13 @@ describe Cronie::DSL do
     @result[:time] = nil
   end
 
-  it "タスクが登録されている" do
+  it "should register task" do
     task = Cronie.tasks.first
     task.name.should == "Named task"
     task.schedule.to_s.should == "0 */2 * * *"
   end
 
-  it "Cronie.run で、登録したタスクが実行される" do
+  it "should run registered task by Cronie.run" do
     Cronie.run(Time.new(2011, 11, 11, 1, 0, 0))
     @result[:time].should be_nil
     Cronie.run(Time.new(2011, 11, 11, 2, 0, 0))
