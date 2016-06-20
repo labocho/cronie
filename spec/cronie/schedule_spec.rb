@@ -21,12 +21,22 @@ module Cronie
       it "should raise parsing less elements" do
         expect {
           Schedule.parse! "* * * *"
-        }.to raise_error
+        }.to raise_error(Schedule::ParseError)
       end
       it "should raise parsing extra elements" do
         expect {
           Schedule.parse! "* * * * * *"
-        }.to raise_error
+        }.to raise_error(Schedule::ParseError)
+      end
+      it "should raise parsing invalid step" do
+        expect {
+          Schedule.parse! "* * * */1,2 *"
+        }.to raise_error(Schedule::ParseError)
+      end
+      it "should raise parsing not a number" do
+        expect {
+          Schedule.parse! "* * * x *"
+        }.to raise_error(Schedule::ParseError)
       end
     end
 

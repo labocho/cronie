@@ -19,7 +19,7 @@ module Cronie
         when /\A\d+\z/
           step.to_i
         else
-          raise ParseError, "Unexpected step #{step.inspect} found in #{str.inspect}"
+          raise ParseError, "Unexpected step #{step.inspect} found in #{text.inspect}"
         end
 
         element.numbers = numbers.map do |e|
@@ -31,7 +31,7 @@ module Cronie
           when /\A(\d+)-(\d+)\z/
             ($1.to_i..$2.to_i)
           else
-            parse_special_element(e) || raise(ParseError, "Unexpected schedule element #{e.inspect} found in #{str.inspect}")
+            parse_special_element(e) || raise(ParseError, "Unexpected schedule element #{e.inspect} found in #{text.inspect}")
           end
         end
 
