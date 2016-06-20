@@ -34,9 +34,9 @@ Create `Croniefile`.
 
 In your application.
 
-   require "cronie"
-   Cronie.load("./Croniefile")
-   Cronie.run(Time.now)
+    require "cronie"
+    Cronie.load("./Croniefile")
+    Cronie.run(Time.now)
 
 ## Work with Resque
 
