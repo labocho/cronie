@@ -38,16 +38,20 @@ In your application.
     Cronie.load("./Croniefile")
     Cronie.run(Time.now)
 
+## Work with ActiveJob
+
+In your application.
+
+    require "resque/active_job"
+    Cronie.load("./Croniefile")
+
+Register job via Ruby.
+
+    Cronie.perform_later(Time.now.to_i)
+
 ## Work with Resque
 
-Register task via Ruby.
-
-    require "cronie"
-    require "resque"
-    Cronie.load("./Croniefile")
-    Cronie.run_async(Time.now)
-
-Or, via redis-cli.
+If you use resque, you can add job via redis-cli.
 
     $ redis-cli sadd resque:queues cronie
     $ redis-cli rpush resque:queue:cronie '{"class":"Cronie","args":'`date +%s`'}'

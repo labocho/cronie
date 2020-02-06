@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## v0.1.0
+### Added
+- Support ActiveJob.
+
+### Deprecated
+- Cronie.run_async is deprecated
+
 ## v0.0.5
 ### Changed
 - Cronie.parse raises Cronie::ParseError rather than NameError when parsing failed.

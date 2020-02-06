@@ -10,6 +10,7 @@ module Cronie
 
   class << self
     attr_accessor :utc_offset
+
     # `time` should be either Time, String or Integer.
     # String will be passed by Time.parse.
     # Integer will be passed by Time.at
@@ -32,10 +33,17 @@ module Cronie
       sandbox.instance_eval File.read(path)
     end
 
-    # for Resque
-    alias_method :perform, :run
     def run_async(time)
+      warn "DEPRECATION WARNING: Cronie.run_async is deprecated. Use 'cronie/active_job'"
       Resque.enqueue(Cronie, encode_time(time))
+    end
+
+    def perform_now(*args)
+      Cronie::ActiveJob.perform_now(*args)
+    end
+
+    def perform_later(*args)
+      Cronie::ActiveJob.perform_later(*args)
     end
 
     private
