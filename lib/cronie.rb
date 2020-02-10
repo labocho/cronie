@@ -30,7 +30,7 @@ module Cronie
     def load(path)
       sandbox = Object.new
       sandbox.send :extend, Cronie::DSL
-      sandbox.instance_eval File.read(path)
+      sandbox.instance_eval(File.read(path), path)
     end
 
     def run_async(time)
