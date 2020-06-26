@@ -41,6 +41,7 @@ module Cronie
     def perform_now(*args)
       Cronie::ActiveJob.perform_now(*args)
     end
+    alias_method :perform, :perform_now
 
     def perform_later(*args)
       Cronie::ActiveJob.perform_later(*args)

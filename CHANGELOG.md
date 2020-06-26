@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## v0.1.2
+### Bugfix
+- Add Cronie.perform to run by Resque (without ActiveJob).
+
 ## v0.1.0
 ### Added
 - Support ActiveJob.
